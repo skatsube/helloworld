@@ -5,9 +5,8 @@ import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -20,37 +19,30 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
-import org.w3c.dom.Text;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Date;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private TextView text;
     private TextView text2;
     private TextView text3;
-    private Button button;
+    private Switch button2;
     private Handler hand = new Handler();
-    public cpuInfo reader = new cpuInfo();
+    private cpuInfo reader = new cpuInfo();
     private LineChart mChart;
-    private String changeText[] = {"OFFにする","ONにする"};
-    private int Flag = 0;
 
 
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Textsetter();
-        hand.postDelayed( func, 1000);
+        setContentView(R.layout.activity_main);
+        textSetter();
+        teiKi();
         Buttonsetter();
         Chartsetter();
+    }
+    private void teiKi(){
+        hand.postDelayed( func, 1000);
     }
     private final Runnable func= new Runnable() {
         @Override
@@ -95,8 +87,7 @@ public class MainActivity extends AppCompatActivity {
         set.setDrawValues(false);
         return set;
     }
-    private void Textsetter(){
-        setContentView(R.layout.activity_main);
+    private void textSetter(){
         text  = (TextView)findViewById(R.id.textview);
         text2 = (TextView)findViewById(R.id.textview2);
         text3 = (TextView)findViewById(R.id.textview3);
@@ -104,15 +95,20 @@ public class MainActivity extends AppCompatActivity {
         text2.setText(reader.cpuRead(0));
     }
     private void Buttonsetter(){
-        button = (Button)findViewById(R.id.button);
-        button.setOnClickListener(
-                new View.OnClickListener() {
+        button2 = (Switch)findViewById(R.id.switch1);
+        button2.setOnCheckedChangeListener(
+                new CompoundButton.OnCheckedChangeListener() {
+
                     @Override
-                    public void onClick(View view) {
-                        button.setText(changeText[Flag]);
-                        Flag = 1 - Flag;
-                        Intent intent = new Intent(MainActivity.this, MyService.class);
-                        MainActivity.this.startService(intent);
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                        if(isChecked){
+                            Intent intent = new Intent(MainActivity.this, MyService.class);
+                            MainActivity.this.startService(intent);
+                        }
+                        else{
+                            Intent intent = new Intent(MainActivity.this, MyService.class);
+                            MainActivity.this.startService(intent);
+                        }
                     }
                 }
         );

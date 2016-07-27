@@ -93,8 +93,7 @@ public class cpuInfo {
         }
     }
     private String[] CutOff(StringBuffer cpuBuffer){
-        String cpuLine    =  "";
-        cpuLine = cpuBuffer.toString();
+        String cpuLine = cpuBuffer.toString();
         int start = cpuLine.indexOf("cpu");
         int end = cpuLine.indexOf("cpu0");
         cpuLine = cpuLine.substring(start, end);

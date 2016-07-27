@@ -53,9 +53,7 @@ public class MyService extends Service {
                 .setContentTitle("温度:CPU使用率")
                 .setContentText(reader.fileRead() + reader.cpuRead(1) + "")
                 .setTicker("notification is displayed");
-        //
 
-        //
         int mNotificationId = 001;
         NotificationManager mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         mNotifyMgr.notify(mNotificationId,mBuilder.build());
