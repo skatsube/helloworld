@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void run() {
 
+            heatSet();
             text3.setText((new Date()).toString());
             addEntry();
             hand.postDelayed( func, 1000);
@@ -92,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         text2 = (TextView)findViewById(R.id.textview2);
         text3 = (TextView)findViewById(R.id.textview3);
         text.setText(reader.fileRead());
-        text2.setText(reader.cpuRead(0));
+        text2.setText(cpuReader()[0]);
     }
     private void Buttonsetter(){
         button2 = (Switch)findViewById(R.id.switch1);
@@ -165,6 +166,24 @@ public class MainActivity extends AppCompatActivity {
         rightAxis.setEnabled(false);
     }
     private String[] cpuReader(){
-        return reader.cpuRead(0).split(",",0);
+        String[] cpu = reader.cpuRead(0).split(",",0);
+        if (Integer.parseInt(cpu[1])>50){
+            text2.setTextColor(Color.RED);
+        }
+        else{
+            text2.setTextColor(Color.BLACK);
+        }
+        return cpu;
+    }
+    private void heatSet(){
+        String heat = reader.fileRead();
+        if (!heat.equals("℃")) {
+            if (Integer.parseInt(heat.substring(0, heat.length() - 1)) >= 50) {
+                text.setTextColor(Color.RED);
+            } else {
+                text.setTextColor(Color.BLACK);
+            }
+        }
+        text.setText(heat);
     }
 }

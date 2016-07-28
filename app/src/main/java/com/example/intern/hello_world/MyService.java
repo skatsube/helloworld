@@ -1,8 +1,10 @@
 package com.example.intern.hello_world;
 
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -51,10 +53,14 @@ public class MyService extends Service {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle("温度:CPU使用率")
-                .setContentText(reader.fileRead() + reader.cpuRead(1) + "")
+                .setContentText(reader.fileRead() + reader.cpuRead(1) + "%")
                 .setTicker("notification is displayed");
-
         int mNotificationId = 001;
+        //
+        Intent intent = new Intent(this, MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 1, intent, PendingIntent.FLAG_ONE_SHOT);
+        mBuilder.setContentIntent(contentIntent);
+        //
         NotificationManager mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         mNotifyMgr.notify(mNotificationId,mBuilder.build());
 
