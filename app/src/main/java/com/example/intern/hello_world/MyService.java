@@ -4,25 +4,14 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
-import android.util.Log;
-import android.widget.RemoteViews;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
 public class MyService extends Service {
     private Handler hand = new Handler();
-    public cpuInfo reader = new cpuInfo();
+    public CpuInfo reader = new CpuInfo();
     private int Flag =0;
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -53,7 +42,8 @@ public class MyService extends Service {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle("温度:CPU使用率")
-                .setContentText(reader.fileRead() + reader.cpuRead(1) + "%")
+                .setContentText(reader.fileRead() + reader.cpuRead()[1
+                        ] + "%")
                 .setTicker("notification is displayed");
         int mNotificationId = 001;
         //

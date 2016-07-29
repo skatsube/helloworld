@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView text3;
     private Switch button2;
     private Handler hand = new Handler();
-    private cpuInfo reader = new cpuInfo();
+    private CpuInfo reader = new CpuInfo();
     private LineChart mChart;
 
 
@@ -37,11 +37,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         textSetter();
-        teiKi();
-        Buttonsetter();
-        Chartsetter();
+        periodic();
+        buttonSetter();
+        chartSetter();
     }
-    private void teiKi(){
+    private void periodic(){//定期処理を開始させる
         hand.postDelayed( func, 1000);
     }
     private final Runnable func= new Runnable() {
@@ -62,8 +62,7 @@ public class MainActivity extends AppCompatActivity {
                 set = createSet();
                 data.addDataSet(set);
             }
-            String bunkatu[] ;
-            bunkatu = cpuReader();
+            String bunkatu[] = cpuReader();
             data.addEntry(new Entry(set.getEntryCount(), (float) (Integer.parseInt(bunkatu[1]))), 0);
             text2.setText(bunkatu[0]);
             data.notifyDataChanged();
@@ -95,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         text.setText(reader.fileRead());
         text2.setText(cpuReader()[0]);
     }
-    private void Buttonsetter(){
+    private void buttonSetter(){
         button2 = (Switch)findViewById(R.id.switch1);
         button2.setOnCheckedChangeListener(
                 new CompoundButton.OnCheckedChangeListener() {
@@ -114,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
     }
-    private void Chartsetter(){
+    private void chartSetter(){
 
         mChart = (LineChart) findViewById(R.id.chart1);
         mChart.setOnChartValueSelectedListener(null);
@@ -166,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
         rightAxis.setEnabled(false);
     }
     private String[] cpuReader(){
-        String[] cpu = reader.cpuRead(0).split(",",0);
+        String[] cpu = reader.cpuRead();
         if (Integer.parseInt(cpu[1])>50){
             text2.setTextColor(Color.RED);
         }

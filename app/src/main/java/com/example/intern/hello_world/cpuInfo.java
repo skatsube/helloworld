@@ -15,28 +15,27 @@ import java.io.InputStream;
 /**
  * Created by intern on 16/07/26.
  */
-public class cpuInfo {
-    public int base[] = new int[15];
+public class CpuInfo {//クラス名は大文字から メソッド名は小文字から
+    public int base[] = new int[16];
     public String fileRead() {
-        String ondo ="";
-        ondo = Heat(ondo);
+        String ondo = heat();
         return ondo + "℃";
     }
 
-    public String cpuRead(int num){
+    public String[] cpuRead(){
         String [] cmdArgs = {"/system/bin/cat","/proc/stat"};
         ProcessBuilder cmd = new ProcessBuilder(cmdArgs);
         StringBuffer cpuBuffer    = new StringBuffer();
-        cpuBuffer = BufferRead(cmd,cpuBuffer);
-        String a[] = CutOff(cpuBuffer);
-        String s = calcu(a,num);
+        cpuBuffer = bufferRead(cmd,cpuBuffer);
+        String cputext[] = cutOff(cpuBuffer);
+        String[] s = calcu(cputext);
         return s;
     }
-    private String Heat(String ondo){
+    private String heat(){
+        String ondo = "";
         try {
         File file = new File("/sys/class/thermal/thermal_zone0/temp");
-        FileReader filereader = null;
-        filereader = new FileReader(file);
+        FileReader filereader = new FileReader(file);
         BufferedReader bufferedReader = new BufferedReader(filereader);
         String line;
         while((line = bufferedReader.readLine())!=null) {
@@ -49,7 +48,7 @@ public class cpuInfo {
         }
         return ondo;
     }
-    private StringBuffer BufferRead(ProcessBuilder cmd,StringBuffer cpuBuffer ){
+    private StringBuffer bufferRead(ProcessBuilder cmd,StringBuffer cpuBuffer ){
         try {
             Process process = cmd.start();
             InputStream in  = process.getInputStream();
@@ -62,37 +61,33 @@ public class cpuInfo {
         }
         return cpuBuffer;
     }
-    private String calcu(String a[],int num){
-        int b[] = new int[15];
-        int c[] = new int[15];
+    private String[] calcu(String cpu[]){
+        int after[] = new int[16];
+        int result[] = new int[16];
         int sum = 0;
-        String s = "";
-        for (int i = 2; i < a.length-1; i++){
-            b[i] = Integer.parseInt(a[i]);
-            sum += base[i] - b[i];
+        String[] text = new String[2];
+        text[0] = "";
+        for (int i = 2; i < cpu.length-1; i++){//2からとるのはcpu  85869 2265 272756 16906192 986 6671 1435 0 0 0　のような数値が入っているため
+            after[i] = Integer.parseInt(cpu[i]);
+            sum += base[i] - after[i];
             //Log.i("CPU"+i,a[i]);
         }
-        for (int i = 2; i < a.length-1; i++){
+        for (int i = 2; i < cpu.length-1; i++){
             if(sum==0){
-                c[i] = 0;
+                result[i] = 0;
             }
             else{
-                c[i] = 100 * (base[i] - b[i]) / sum;
+                result[i] = 100 * (base[i] - after[i]) / sum;
             }
 
-            s = s + String.valueOf(c[i]) + "%:";
-            base[i] = b[i];
+            text[0] = text[0] + String.valueOf(result[i]) + "%:";
+            base[i] = after[i];
         }
-        if (num == 0){
-            return s + "," + String.valueOf(100 - c[5]);
-        }
-        else {
-            //Log.i("CPU--",String.valueOf(c[5]));
-            //Log.i("C",s);
-            return String.valueOf(100 - c[5]);
-        }
+        text[1] = String.valueOf(100 - result[5]);
+        return text;
     }
-    private String[] CutOff(StringBuffer cpuBuffer){
+    private String[] cutOff(StringBuffer cpuBuffer){
+        //Log.i("CPU_VALUES_LINE", String.valueOf(cpuBuffer)+"1");
         String cpuLine = cpuBuffer.toString();
         int start = cpuLine.indexOf("cpu");
         int end = cpuLine.indexOf("cpu0");
